@@ -1,13 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Post {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({ type: 'text' })
   id: string;
 
   @Column({ type: 'text' })
   title: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int4' })
   view: number;
 }
