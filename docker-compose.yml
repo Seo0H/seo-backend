@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  study_backend:
+    image: study_backend
+    build: ./
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+
+networks:
+  nestjs_network:
+    driver: bridge
