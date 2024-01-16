@@ -25,7 +25,7 @@ export class PostsController {
   }
 
   @Patch('/views/increment')
-  increment(
+  async increment(
     @Body('id') postId: string,
     @Session() session: Record<string, any> & SessionViews,
   ) {
@@ -36,7 +36,7 @@ export class PostsController {
     const lastViewTime = session.views[postId] || 0;
 
     if (Date.now() - lastViewTime > thirtyMinutes) {
-      this.postsService.incrementViewCount(postId);
+      await this.postsService.incrementViewCount(postId);
       session.views[postId] = Date.now();
       return { status: true, message: '' };
     }
