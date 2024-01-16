@@ -1,8 +1,11 @@
 import { Controller, Patch, Get, Body, Post, Session } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { IncrementViewDTO } from 'src/post/dto/increment-view.dto';
 import { PostsService } from 'src/post/post.service';
 import type { SessionViews } from 'src/post/types';
 
 @Controller('post')
+@ApiTags('Blog API')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
@@ -25,8 +28,12 @@ export class PostsController {
   }
 
   @Patch('/views/increment')
+  @ApiOperation({
+    summary: '조회수 중가 API',
+    description: '유저가 진입한 포스트 ID를 통해 조회수를 증가시킨다.',
+  })
   async increment(
-    @Body('id') postId: string,
+    @Body() { postId }: IncrementViewDTO,
     @Session() session: Record<string, any> & SessionViews,
   ) {
     if (!session.views) {
