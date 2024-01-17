@@ -32,8 +32,8 @@ export class PostsController {
     summary: '조회수 중가 API',
     description: '유저가 진입한 포스트 ID를 통해 조회수를 증가시킨다.',
   })
-  async increment(
-    @Body() { postId }: IncrementViewDTO,
+  increment(
+    @Body() { id: postId }: IncrementViewDTO,
     @Session() session: Record<string, any> & SessionViews,
   ) {
     if (!session.views) {
@@ -43,7 +43,7 @@ export class PostsController {
     const lastViewTime = session.views[postId] || 0;
 
     if (Date.now() - lastViewTime > thirtyMinutes) {
-      await this.postsService.incrementViewCount(postId);
+      this.postsService.incrementViewCount(postId);
       session.views[postId] = Date.now();
       return { status: true, message: '' };
     }
