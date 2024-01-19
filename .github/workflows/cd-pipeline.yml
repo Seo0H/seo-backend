@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-      - name : 📁 Make Env File
+      - name : 📁 Make Env & ssl File
         run: |
           echo "make env folder"
 
@@ -20,6 +20,13 @@ jobs:
               echo "폴더가 생성되었습니다: env"
           else
               echo "폴더가 이미 존재합니다: env"
+          fi
+
+          if [ ! -d "ssl" ]; then
+          mkdir -p ssl
+              echo "폴더가 생성되었습니다: ssl"
+          else
+              echo "폴더가 이미 존재합니다: ssl"
           fi
 
           echo "${{ secrets.ENV_LOCAL }}" > env/.env.local
