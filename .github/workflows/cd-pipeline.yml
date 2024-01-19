@@ -11,6 +11,20 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
+      - name : 📁 Make Env File
+        run: |
+          echo "make env folder"
+
+          if [ ! -d "env" ]; then
+          mkdir -p env
+              echo "폴더가 생성되었습니다: env"
+          else
+              echo "폴더가 이미 존재합니다: env"
+          fi
+
+          echo "${{ secrets.ENV_LOCAL }}" > env/.env.local
+          echo "${{ secrets.DB_SSL }}" > ssl/prod-ca-2021.crt
+
       - name: ⏬ Pull Docker image
         run: sudo docker pull seoh99/seo-backend:latest
 
@@ -18,4 +32,4 @@ jobs:
         run: sudo docker rm -f seo-backend || true
 
       - name: 👟 Run Docker Container
-        run: sudo docker run -d -p 80:8080 --name seo-backend-container seoh99/seo-backend
+        run: sudo docker run -d -p 80:8080 --env-file env/.env.local --name seo-backend-container seoh99/seo-backend
