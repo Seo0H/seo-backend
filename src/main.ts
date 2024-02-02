@@ -38,7 +38,8 @@ async function bootstrap() {
 
   app.setViewEngine('ejs');
   app.enableCors({
-    origin: ['http://localhost:8080', 'https://seo0h.github.io'],
+    origin: ['http://localhost:3000', 'https://seo0h.github.io'],
+    credentials: true,
     optionsSuccessStatus: 200,
   });
 

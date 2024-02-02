@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from 'src/post/entities/post.entity';
 import { Repository } from 'typeorm';
@@ -16,21 +21,25 @@ export class PostsService {
   }
 
   async incrementViewCount(postId: string) {
-    const found = await this.postRepository.findOne({
-      select: ['id', 'view'],
-      where: { id: postId },
-    });
+    const found = await this.getView(postId);
 
     if (found === null) {
       throw new NotFoundException(`${postId}를 찾지 못했습니다.`);
     }
+    try {
+      await this.postRepository.increment({ id: postId }, 'view', 1);
+      return await this.getView(postId);
+    } catch (error) {
+      throw new HttpException('DB Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
-    const increased = await this.postRepository.increment(
-      { id: postId },
-      'view',
-      1,
-    );
+  async getView(postId: string) {
+    const selectedPost = await this.postRepository.findOne({
+      select: ['id', 'view'],
+      where: { id: postId },
+    });
 
-    return increased.affected != null;
+    return selectedPost.view;
   }
 }
