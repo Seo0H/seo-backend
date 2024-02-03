@@ -39,4 +39,4 @@ jobs:
         run: sudo docker rm -f seo-backend || true
 
       - name: 👟 Run Docker Container
-        run: sudo docker run -d -p 80:8080 --env-file env/.env.local --name seo-backend-container seoh99/seo-backend
+        run: sudo docker run -d -p 80:8080 --env-file env/.env.local --name seo-backend seoh99/seo-backend
