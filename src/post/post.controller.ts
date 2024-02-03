@@ -14,19 +14,6 @@ export class PostsController {
     return this.postsService.findAll();
   }
 
-  @Post('/views/session')
-  setSession(
-    @Body('id') postId: string,
-    @Session() session: Record<string, any>,
-  ) {
-    session[postId] = true;
-  }
-
-  @Get('/views/session/:id')
-  getSession(@Session() session: Record<string, any>) {
-    console.log(session);
-  }
-
   @Patch('/views')
   @ApiOperation({
     summary: '조회수 중가 API',
