@@ -5,19 +5,39 @@ import { join } from 'path';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import RedisStore from 'connect-redis';
+import { createClient } from 'redis';
+import { Logger } from '@nestjs/common';
+import Config from 'src/lib/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    logger: ['verbose'],
+  });
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
 
   //--- session & cookie ---
+  // Initialize client.
+  const redisClient = createClient({
+    url: new Config(process.env).get('redisUrl'),
+  });
+
+  redisClient.connect().catch((error) => new Logger(error));
+
+  // Initialize store.
+  const redisStore = new RedisStore({
+    client: redisClient,
+    ttl: 3600, // 1hour
+  });
+
   app.use(cookieParser());
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
+      store: redisStore,
     }),
   );
 

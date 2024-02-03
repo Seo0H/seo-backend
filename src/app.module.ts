@@ -9,6 +9,7 @@ import { OpenGraphModule } from 'src/open-graph/open-graph.module';
 import { Post } from 'src/post/entities/post.entity';
 import { PostsModule } from 'src/post/post.module';
 import { ConfigModule } from '@nestjs/config';
+import Config from 'src/lib/config';
 
 @Module({
   imports: [
@@ -18,13 +19,13 @@ import { ConfigModule } from '@nestjs/config';
     }),
     OpenGraphModule,
     TypeOrmModule.forRoot({
-      url: process.env.DB_URL,
+      url: new Config(process.env).get('dbUrl'),
       type: 'postgres',
       entities: [Post],
       synchronize: true,
       logging: true,
       ssl: {
-        ca: process.env.DB_SSL_PATH,
+        ca: new Config(process.env).get('dbSSLPath'),
         rejectUnauthorized: false,
       },
     }),
