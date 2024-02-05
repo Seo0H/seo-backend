@@ -77,6 +77,7 @@ async function bootstrap() {
     origin: [/localhost:3000$/, 'https://seo0h.github.io'],
     credentials: true,
     optionsSuccessStatus: 200,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   });
 
   await app.listen(8080);
