@@ -3,8 +3,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 
-import { AppController } from 'src/app.controller';
-import { AppService } from 'src/app.service';
 import { OpenGraphModule } from 'src/open-graph/open-graph.module';
 import { Post } from 'src/post/entities/post.entity';
 import { PostsModule } from 'src/post/post.module';
@@ -35,7 +33,7 @@ const isDev = process.env.NODE_ENV === 'development';
     }),
     PostsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
