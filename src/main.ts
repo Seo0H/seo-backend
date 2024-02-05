@@ -2,25 +2,38 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import RedisStore from 'connect-redis';
 import { createClient } from 'redis';
 import { Logger } from '@nestjs/common';
-import Config from 'src/lib/config';
+import { readFileSync } from 'fs';
 
 async function bootstrap() {
+  const logger = new Logger(bootstrap.name);
+  const isDev = process.env.NODE_ENV === 'development';
+
+  //--- ssl ---
+  // NOTE: SSL은 개발 모드일때만 사용
+  let httpsOptions = null;
+
+  if (isDev) {
+    logger.log('SSL IS RUNNING..');
+    httpsOptions = {
+      key: readFileSync(process.env.LOCALHOST_SSL_KEY_PATH),
+      cert: readFileSync(process.env.LOCALHOST_SSL_CERT_PATH),
+    };
+  }
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['verbose'],
+    httpsOptions,
   });
-  app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.setBaseViewsDir(join(__dirname, '..', 'views'));
 
   //--- session & cookie ---
   // Initialize client.
   const redisClient = createClient({
-    url: new Config(process.env).get('redisUrl'),
+    url: process.env.REDIS_URL,
   });
 
   redisClient.connect().catch((error) => new Logger(error));
@@ -31,18 +44,21 @@ async function bootstrap() {
     ttl: 3600, // 1hour
   });
 
-  app.use(cookieParser());
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       store: redisStore,
+      cookie: {
+        sameSite: 'none',
+        secure: true,
+      },
     }),
   );
 
   // --- swagger ---
-  if (process.env.NODE_ENV === 'development') {
+  if (isDev) {
     const config = new DocumentBuilder()
       .setTitle('seo-backend')
       .setDescription(
@@ -58,7 +74,7 @@ async function bootstrap() {
 
   app.setViewEngine('ejs');
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://seo0h.github.io'],
+    origin: [/localhost:3000$/, 'https://seo0h.github.io'],
     credentials: true,
     optionsSuccessStatus: 200,
   });

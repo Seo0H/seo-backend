@@ -1,4 +1,4 @@
-import { Controller, Patch, Get, Body, Post, Session } from '@nestjs/common';
+import { Controller, Patch, Get, Body, Session } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IncrementViewDTO } from 'src/post/dto/increment-view.dto';
 import { PostsService } from 'src/post/post.service';
@@ -27,7 +27,7 @@ export class PostsController {
       session.views = {};
     }
 
-    const thirtyMinutes = 30 * 60 * 1000;
+    const thirtyMinutes = 30 * 60 * 1000; // millisecond
     const lastViewTime = session.views[postId] || 0;
 
     if (Date.now() - lastViewTime > thirtyMinutes) {

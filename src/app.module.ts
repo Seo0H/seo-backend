@@ -9,23 +9,24 @@ import { OpenGraphModule } from 'src/open-graph/open-graph.module';
 import { Post } from 'src/post/entities/post.entity';
 import { PostsModule } from 'src/post/post.module';
 import { ConfigModule } from '@nestjs/config';
-import Config from 'src/lib/config';
+
+const isDev = process.env.NODE_ENV === 'development';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env.local',
+      envFilePath: isDev ? ['.env.local', '.env.dev'] : '.env.local',
       isGlobal: true,
     }),
     OpenGraphModule,
     TypeOrmModule.forRoot({
-      url: new Config(process.env).get('dbUrl'),
+      url: process.env.DB_URL,
       type: 'postgres',
       entities: [Post],
       synchronize: true,
       logging: true,
       ssl: {
-        ca: new Config(process.env).get('dbSSLPath'),
+        ca: process.env.DB_SSL_PATH,
         rejectUnauthorized: false,
       },
     }),
