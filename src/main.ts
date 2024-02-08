@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
 import session from 'express-session';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import RedisStore from 'connect-redis';
@@ -74,7 +73,7 @@ async function bootstrap() {
 
   app.setViewEngine('ejs');
   app.enableCors({
-    origin: [/localhost:3000$/, 'https://seo0h.github.io'],
+    origin: [/localhost:3000$/, 'https://blog.seo0h.me'],
     credentials: true,
     optionsSuccessStatus: 200,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
