@@ -43,15 +43,20 @@ async function bootstrap() {
     ttl: 3600, // 1hour
   });
 
+  app.set('trust proxy', 1);
+
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
+      proxy: true,
       store: redisStore,
       cookie: {
-        sameSite: 'none',
+        sameSite: 'strict',
+        domain: '.seo0h.me',
         secure: true,
+        httpOnly: true,
       },
     }),
   );
