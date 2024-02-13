@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
-export class Post {
+export default class Post {
   @PrimaryColumn({ type: 'text' })
   id: string;
 
