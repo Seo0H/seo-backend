@@ -5,14 +5,18 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Post } from 'src/post/entities/post.entity';
 import { Repository } from 'typeorm';
+
+import DevPost from 'src/entities/post/index.dev.entity';
+import Post from 'src/entities/post/index.entity';
+
+import { isDev } from 'src/lib/config/mode';
 
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectRepository(Post)
-    private postRepository: Repository<Post>,
+    @InjectRepository(isDev ? DevPost : Post)
+    private postRepository: Repository<Post | DevPost>,
   ) {}
 
   async findAll() {
