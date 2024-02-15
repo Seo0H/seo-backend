@@ -9,6 +9,8 @@ import { PostsModule } from 'src/post/post.module';
 
 import { isDev } from 'src/lib/config/mode';
 import typeOrmConfig from 'src/lib/config/db';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -20,10 +22,16 @@ import typeOrmConfig from 'src/lib/config/db';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
     }),
+    ThrottlerModule.forRoot([{ ttl: 6000, limit: 10 }]),
     OpenGraphModule,
     PostsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
