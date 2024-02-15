@@ -33,12 +33,11 @@ export class PostsController {
     if (Date.now() - lastViewTime > thirtyMinutes) {
       const views = await this.postsService.incrementViewCount(postId);
       session.views[postId] = Date.now();
-      return { status: true, message: '', data: { views } };
+      return { views };
     }
 
     return {
-      status: false,
-      data: { views: await this.postsService.getView(postId) },
+      views: await this.postsService.getView(postId),
       message: '⚠️ 30분 내의 이전 방문 기록이 존재합니다.',
     };
   }
