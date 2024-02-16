@@ -8,6 +8,6 @@ export default class Post {
   @Column({ type: 'text' })
   title: string;
 
-  @Column({ type: 'int4' })
-  view: number;
+  @Column({ type: 'int4', nullable: true, default: 0 })
+  views: number;
 }

@@ -31,7 +31,7 @@ export class PostsService {
       throw new NotFoundException(`${postId}를 찾지 못했습니다.`);
     }
     try {
-      await this.postRepository.increment({ id: postId }, 'view', 1);
+      await this.postRepository.increment({ id: postId }, 'views', 1);
       return await this.getView(postId);
     } catch (error) {
       throw new HttpException('DB Error', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -40,10 +40,10 @@ export class PostsService {
 
   async getView(postId: string) {
     const selectedPost = await this.postRepository.findOne({
-      select: ['id', 'view'],
+      select: ['id', 'views'],
       where: { id: postId },
     });
 
-    return selectedPost.view;
+    return selectedPost.views;
   }
 }
