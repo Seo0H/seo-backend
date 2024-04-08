@@ -6,6 +6,15 @@ import { OpenGraphDto } from 'src/open-graph/dto/OpenGraph.dto';
 @Injectable()
 export class OpenGraphService {
   async getOG({ url }: OpenGraphDto) {
-    return await ogs({ url });
+    if (url.includes('notion')) {
+      return await ogs({
+        url,
+        fetchOptions: { headers: { 'user-agent': 'bot' } },
+      });
+    } else {
+      return await ogs({
+        url,
+      });
+    }
   }
 }
