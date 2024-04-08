@@ -8,6 +8,10 @@ import { Logger } from '@nestjs/common';
 import { isDev } from 'src/lib/config/mode';
 
 export default async function prodBootstrap() {
+  const logger = new Logger(prodBootstrap.name);
+
+  logger.log('PROD SERVER IS RUNNING..');
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   //--- session & cookie ---
@@ -44,7 +48,7 @@ export default async function prodBootstrap() {
   app.setViewEngine('ejs');
 
   app.enableCors({
-    origin: ['https://blog.seo0h.me'],
+    origin: process.env.CORS_ORIGIN.split(','),
     credentials: true,
     optionsSuccessStatus: 200,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
